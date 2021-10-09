@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIME</title>
+  <style>
+    body { text-align: center }
+  </style>
+</head>
+<body>
+  <script>
+    (function() {
+      let start = 0;
+      function flashWindow() {
+        setTimeout(() => {
+          const color = document.body.style.backgroundColor;
+          document.body.style.backgroundColor = color ? "" : "red";
+          flashWindow();
+        }, 500)
+      }
+      function countDown(minuutes) {
+        setTimeout(() => {
+          start += 1;
+          document.title = `${start}分钟`;
+          if (start >= minuutes) {
+            flashWindow()
+          } else {
+            countDown(minuutes);
+          }
+        }, 1000 * 60);
+      }
+      countDown(45);
+    })();
+  </script>
+  <script>
+    const PI = Math.PI
+    const scale = getCanvasScale()
+    function createCanvas (width, height, scaleFactor) {
+      const canvas = document.createElement('canvas')
+
+      canvas.width = width * scaleFactor
+      canvas.height = height * scaleFactor
+      canvas.style.width = width + 'px'
+      canvas.style.height = height + 'px'
+      const ctx = canvas.getContext('2d')
+      ctx.scale(scaleFactor, scaleFactor)
+      document.body.appendChild(canvas)
+      return [canvas, ctx]
+    }
+    function getCanvasScale () {
+      const ratio = 'devicePixelRatio'
+      if (!(ratio in window)) return 1
+      return window[ratio] > 1 ? window[ratio] : 1
+    }
+  </script>
+  <script>
+  (function() {
+    const [w,h] = [300, 300]
+    const height = h;
+    const [cvs, ctx] = createCanvas(w, h, scale)
+    function makeCirle(x, y, r) {
+      setCenter(w / 2, h / 2)
+      ctx.beginPath()
+      ctx.arc(x, y, r, 0, 2 * PI)
+      ctx.stroke()
+      ctx.closePath()
+      setCenter(-w/2, -h/2)
+    }
+    function makeStep(step = 12, len = 5) {
+      for (let i = 0; i < step; i++) {
+        ctx.save()
+        ctx.translate(w/2, h/2)
+        ctx.beginPath()
+        ctx.rotate(i * (360 / step) * PI / 180)
+        ctx.moveTo(0, 100)
+        ctx.lineTo(0, 100 - len * scale)
+        ctx.lineWidth = 7 % len
+        ctx.stroke()
+        ctx.closePath()
+        ctx.restore()
+      }
+    }
+    function setCenter(x, y) {
+      ctx.translate(x, y)
+    }
+    
+
+    function startup() {
+      const d = new Date()
+      const h = d.getHours();
+      const m = d.getMinutes();
+      const s = d.getSeconds();
+      // 秒
+      ctx.save()
+      setCenter(w/2, height/2)
+      ctx.rotate(s * 6 * PI / 180)
+      ctx.moveTo(0, -3)
+      ctx.lineTo(0, -80)
+      ctx.stroke()
+      ctx.restore()
+      // 分
+      ctx.save()
+      setCenter(w/2, height/2)
+      ctx.beginPath()
+      ctx.rotate(m * 6 * PI / 180)
+      ctx.moveTo(0, -3)
+      ctx.lineWidth = 2
+      ctx.lineTo(0, -70)
+      ctx.stroke()
+      ctx.closePath()
+      ctx.restore()
+      // 时
+      ctx.save()
+      setCenter(w/2, height/2)
+      ctx.beginPath()
+      ctx.rotate((h % 12) * 30 * PI / 180 + (m / 60) * 5 * 6 * PI / 180)
+      ctx.moveTo(0, -3)
+      ctx.lineWidth = 4
+      ctx.lineTo(0, -50)
+      ctx.stroke()
+      ctx.closePath()
+      ctx.restore()
+    }
+    function clear() {
+      ctx.clearRect(0, 0, w, h)
+    }
+    function init() {
+      clear()
+      makeCirle(0,0,103)
+      makeCirle(0,0,100)
+      makeCirle(0,0,3)
+      makeStep(12, 4)
+      makeStep(60, 2)
+      startup()
+      setTimeout(init, 1000)
+    }
+    init()
+  })()
+  </script>
+  <script>
+  const dots = [
+    0,0,0,
+    0,0,0,
+    0,0,0,
+    0,0,0,
+    0,1,1,
+    0,0,0,
+    0,1,1,
+    0,0,0,
+    0,0,0,
+    0,0,0
+  ]
+  const numbers = [
+    [
+      0,0,1,1,1,0,0,
+      0,1,1,0,1,1,0,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,0,1,1,0,
+      0,0,1,1,1,0,0,
+    ],[
+      0,0,0,1,1,0,0,
+      0,1,1,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      1,1,1,1,1,1,1,
+    ],[
+      0,1,1,1,1,1,0,
+      1,1,0,0,0,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,1,1,0,
+      0,0,0,1,1,0,0,
+      0,0,1,1,0,0,0,
+      0,1,1,0,0,0,0,
+      1,1,0,0,0,0,0,
+      1,1,0,0,0,1,1,
+      1,1,1,1,1,1,1,
+    ],[
+      1,1,1,1,1,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,1,1,0,
+      0,0,0,1,1,0,0,
+      0,0,1,1,1,0,0,
+      0,0,0,0,1,1,0,
+      0,0,0,0,0,1,1,
+      0,0,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,1,1,1,0,
+    ],[
+      0,0,0,0,1,1,0,
+      0,0,0,1,1,1,0,
+      0,0,1,1,1,1,0,
+      0,1,1,1,1,1,0,
+      1,1,1,0,1,1,0,
+      1,1,0,0,1,1,1,
+      1,1,1,1,1,1,1,
+      0,0,0,0,1,1,0,
+      0,0,0,0,1,1,0,
+      0,0,0,1,1,1,1,
+    ],[
+      1,1,1,1,1,1,1,
+      1,1,0,0,0,0,0,
+      1,1,0,0,0,0,0,
+      1,1,1,1,1,1,0,
+      0,0,0,0,0,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,1,1,1,0,
+    ],[
+      0,0,0,0,1,1,0,
+      0,0,1,1,0,0,0,
+      0,1,1,0,0,0,0,
+      1,1,0,0,0,0,0,
+      1,1,1,1,1,1,0,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,1,1,1,0,
+    ],[
+      1,1,1,1,1,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,1,1,0,
+      0,0,0,0,1,1,0,
+      0,0,0,1,1,0,0,
+      0,0,0,1,1,0,0,
+      0,0,1,1,0,0,0,
+      0,0,1,1,0,0,0,
+      0,0,1,1,0,0,0,
+      0,0,1,1,0,0,0,
+    ],[
+      0,1,1,1,1,1,0,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,1,1,1,0,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,1,1,1,0,
+    ],[
+      0,1,1,1,1,1,0,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      1,1,0,0,0,1,1,
+      0,1,1,1,0,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,0,1,1,
+      0,0,0,0,1,1,0,
+      0,0,0,1,1,0,0,
+      0,1,1,0,0,0,0,
+    ]
+  ]
+  </script>
+  <script>
+  (function() {
+    let balls = []
+    let prevSeconds = '';
+    let mapOfN = {}
+    let visible = true
+    const ballsR = 2
+    const ballGap = 2
+    const ballPlace = ballsR * 2 + ballGap * 2
+    const h = ballPlace * 11 + 80
+    const w = getOffset(6, 2) + 50
+    const [cvs, ctx] = createCanvas(w, h, scale)
+    cvs.style.display = "none";
+    function makeColor(r=255, g=255, b=255) {
+      r = r * Math.random()
+      g = g * Math.random()
+      b = b * Math.random()
+      return `rgb(${r},${g},${b})`
+    }
+    function makeBall(x, y, color="#A75AF2") {
+      ctx.beginPath()
+      ctx.arc(x, y, ballsR, 0, 2 * PI)
+      ctx.fillStyle = color
+      ctx.fill()
+      ctx.stroke()
+      ctx.closePath()
+    }
+    function clear() {
+      ctx.clearRect(0, 0, w, h)
+    }
+    function getOffset(p, x = 0) {
+      return p * (ballPlace * 7 + 6) + x * ballPlace * 4
+    }
+    const distance = {
+       0: 0,
+       1: getOffset(1), 
+       2: getOffset(2),
+       3: getOffset(2, 1),
+       4: getOffset(3, 1),
+       5: getOffset(4, 1),
+       6: getOffset(4, 2),
+       7: getOffset(5, 2)
+    }
+    function makeNum(num, pos=0) {
+      ctx.save()
+      ctx.translate(distance[pos], 0)
+      let dot = numbers[num]
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 7; j++) {
+          let y = (ballPlace + i * ballPlace)
+          let x = (ballPlace + j * ballPlace)
+          if (dot[i * 7 + j] === 1) {
+            ctx.moveTo(x, y)
+            makeBall(x, y)
+          }
+        }
+      }
+      ctx.restore()
+    }
+    function makeDot(pos = 2) {
+      ctx.save()
+      ctx.translate(distance[pos], 0)
+      for(let i = 0; i < 10; i++) {
+        for(let j = 0; j < 3; j++) {
+          let y = (ballPlace + i * ballPlace)
+          let x = (ballPlace + j * ballPlace)
+          let n = i * 3 + j
+          if (dots[n] === 1) {
+            ctx.moveTo(x, y)
+            makeBall(x, y)
+          }
+        }
+      }
+      ctx.restore()
+    }
+    function addBalls(x, y, vx, vy, g) {
+      if (visible) balls.push({ x, y, vx, vy, g, color: makeColor() });
+    }
+    function update() {
+      balls.forEach(d => {
+        d.x += d.vx
+        d.y += d.vy
+        d.vy += d.g
+        if (d.y + ballsR >= h) {
+          dy = h - ballsR
+          d.vy = -d.vy * 0.6
+        }
+      })
+      let nums = 0;
+      balls.forEach(d => {
+        if (0 < d.x && d.x < w) {
+          balls[nums++] = d
+        }
+      })
+      while(nums < balls.length) {
+        balls.pop()
+      }
+    }
+    function tran(num) {
+      return num.toString().padStart(2, '0')
+    }
+    function init(isColorful = false) {
+      clear()
+      update()
+      let date = new Date();
+      let h = date.getHours();
+      let m = date.getMinutes();
+      let s = date.getSeconds();
+      h = tran(h)
+      m = tran(m)
+      s = tran(s)
+      let time = [h, ':', m, ':', s].join('').split('');
+      time.forEach((d, i) => {
+        if (d === ':') {
+          makeDot(i)
+        } else {
+          makeNum(d, i)
+          if (isColorful) {
+            let cur = mapOfN[i]
+            if (cur !== d) {
+              mapOfN[i] = d;
+              let ii = i;
+              numbers[d].forEach((n, i) => {
+                if (n === 0) return;
+                let dc = distance[ii];
+                let x = dc + ((i % 7) + 1) * ballPlace
+                let y = (Math.floor(i/7) + 1) * ballPlace
+                let vx = Math.pow(-1, Math.floor(Math.random()*1000)) * 4
+                let vy = Math.pow(-1, Math.floor(Math.random()*1000)) * 3
+                let g = 1.5 + Math.random() * 0.5
+                addBalls(x, y, vx, vy, g, makeColor() )
+              })
+            }
+          }
+        }
+      })
+      balls.forEach(d => {
+        if(isColorful) {
+          makeBall(d.x, d.y, d.color)
+        }
+      })
+      setTimeout(init, 50, isColorful)
+    }
+    window.startBall = init
+    window.showBall = () => {
+      cvs.style.display = "unset";
+    }
+    window.addEventListener('visibilitychange', (e) => {
+      visible = e.target.visibilityState === 'visible'
+
+      while(balls.length > 0 && !visible) {
+        balls.pop()
+      }
+    })
+  })()
+  </script>
+  <script>
+    (function(){
+      let count = 0;
+      function start() {
+        count++;
+        if (count > 5) {
+          window.showBall()
+          window.startBall(true)
+          window.removeEventListener('click', start);
+        }
+      }
+      window.addEventListener('click', start)
+    })()
+  </script>
+  <canvas id="myCanvas"></canvas>
+
+  <script>
+      var WAVE_HEIGHT = 50 //波浪变化高度
+      var SCALE = 1 // 绘制速率
+      var CYCLE = 360 / SCALE
+      var TIME = 0
+  
+      function initCanvas() {
+          var c = document.getElementById("myCanvas")
+          var width = document.body.offsetWidth;
+          var height = 200
+  
+          var ctx = c.getContext("2d")
+          c.width = width
+          c.height = height
+  
+          // start
+          window.requestAnimationFrame(function() {
+              draw(ctx, width, height)
+          })
+      }
+  
+      function draw(ctx, width, height) {
+          ctx.clearRect(0, 0, width, height)
+  
+          TIME = (TIME + 1) % CYCLE
+          var angle = SCALE * TIME // 当前正弦角度
+          var dAngle = 60 // 两个波峰相差的角度
+  
+          ctx.beginPath()
+          ctx.moveTo(0, height * 0.5 + distance(WAVE_HEIGHT, angle, 0))
+          ctx.bezierCurveTo(
+              width * 0.4,
+              height * 0.5 + distance(WAVE_HEIGHT, angle, dAngle),
+              width * 0.6,
+              height * 0.5 + distance(WAVE_HEIGHT, angle, 2 * dAngle),
+              width,
+              height * 0.5 + distance(WAVE_HEIGHT, angle, 3 * dAngle)
+          )
+          ctx.strokeStyle = "#ff0000"
+          ctx.stroke()
+  
+          ctx.beginPath()
+          ctx.moveTo(0, height * 0.5 + distance(WAVE_HEIGHT, angle, -30))
+          ctx.bezierCurveTo(
+              width * 0.3,
+              height * 0.5 + distance(WAVE_HEIGHT, angle, dAngle - 30),
+              width * 0.7,
+              height * 0.5 + distance(WAVE_HEIGHT, angle, 2 * dAngle - 30),
+              width,
+              height * 0.5 + distance(WAVE_HEIGHT, angle, 3 * dAngle - 30)
+          )
+          ctx.strokeStyle = "#0000ff"
+          ctx.stroke()
+  
+          function distance(height, currAngle, diffAngle) {
+              return height * Math.cos((((currAngle - diffAngle) % 360) * Math.PI) / 180)
+          }
+  
+          // animate
+          window.requestAnimationFrame(function() {
+              draw(ctx, width, height)
+          })
+      }
+  
+      initCanvas()
+  </script>
+</body>
+</html>
